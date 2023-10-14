@@ -1,6 +1,5 @@
-import React from "react"
+import { monthsMapper, productTableHeaders } from "@/utils/config"
 import Table from "../Table"
-import { productTableHeaders } from "@/utils/config"
 
 async function extractAllProducts() {
   const res = await fetch("http://localhost:3000/api/product/all-products", {
@@ -13,18 +12,21 @@ async function extractAllProducts() {
   return data
 }
 
-export default async function ProductListing() {
+export default async function ProductList() {
   const allProducts = await extractAllProducts()
+
+  console.log(allProducts)
 
   return (
     <Table
       tableHeaderText='All Products Overview'
       tableHeaderCells={productTableHeaders}
       data={
-        allProducts && allProducts.length
-          ? allProducts.map((item) => ({
+        allProducts && allProducts.data && allProducts.data.length
+          ? allProducts.data.map((item) => ({
               ...item,
-              revenue: item.price * item.sale,
+              revenue: parseInt(item.price * item.sales),
+              month: monthsMapper[item.month],
             }))
           : []
       }
